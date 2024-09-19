@@ -18,11 +18,6 @@ echo "" >> ./out/commits.txt
 # Append the commit message to ./out/commits.txt
 cat "$1" >> ./out/commits.txt
 
-# Optionally, add a timestamp for when the commit was made
-echo "Committed on $(date)" >> ./out/commits.txt
-echo "" >> ./out/commits.txt # Add an empty line for better readability
-EOF
-
 # Make the commit-msg hook executable
 chmod +x "$HOOK_FILE"
 echo "commit-msg hook created and made executable."
