@@ -2,24 +2,16 @@
 
 # Define the hook file path
 HOOK_FILE=".git/hooks/commit-msg"
+cat << 'EOF' > "$HOOK_FILE"
 
-# Create the commit-msg hook if it doesn't exist
-if [ -f "$HOOK_FILE" ]; then
-    echo "commit-msg hook already exists."
-else
-    echo "Creating commit-msg hook..."
-
-    # Write the content to the commit-msg hook
-    cat << 'EOF' > "$HOOK_FILE"
-#!/bin/bash
 
 # Check if ./out directory exists, if not, create it
-if [ ! -d "./out" ]; then
-  mkdir ./out
-fi
+
+mkdir ./src/out
+
 
 # Append the commit message to ./out/commits.txt
-cat "\$1" >> ./out/commits.txt
+cat "\$1" >> ./src/out/commits.txt
 
 # Optionally, add a timestamp for when the commit was made
 echo "Committed on \$(date)" >> ./out/commits.txt
