@@ -25,15 +25,5 @@ fi
 chmod +x "$POST_COMMIT_HOOK"
 echo "post-commit hook created and made executable."
 
-# Ensure that the ./out directory and commits.txt file exist
-if [ ! -d "./out" ]; then
-  echo "Creating ./out directory..."
-  mkdir ./out
-fi
-
-if [ ! -f "./out/commits.txt" ]; then
-  echo "Creating ./out/commits.txt file..."
-  touch ./out/commits.txt
-fi
 
 echo "Setup complete!"
