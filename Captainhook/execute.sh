@@ -15,16 +15,24 @@ if [ ! -f "./out/commits.txt" ]; then
   touch ./out/commits.txt
 fi
 
-# Set up the commit-msg hook
-HOOK_FILE=".git/hooks/commit-msg"
+# Set up the pre-commit hook
+HOOK_FILE=".git/hooks/pre-commit"
 
 cat << 'EOF' > "$HOOK_FILE"
 #!/bin/bash
-COMMIT_MSG_FILE=$1
-COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
-echo "$COMMIT_MSG" >> ./out/commits.txt
+
+# Check for duplicate Signed-off-by lines
+if [ "" != "$(grep '^Signed-off-by: ' "$1" | sort | uniq -c | sed -e '/^[[:space:]]*1[[:space:]]/d')" ]; then
+  echo >&2 "Duplicate Signed-off-by lines."
+  exit 1
+fi
+
+# Log the commit message to ./out/commits.txt
+COMMIT_MSG_FILE=$(git log -1 --pretty=%B)
+mkdir -p ./out
+echo "$COMMIT_MSG_FILE" >> ./out/commits.txt
 EOF
 
 chmod +x "$HOOK_FILE"
 
-echo "Git repository initialized and commit-msg hook set up to log commit messages to ./out/commits.txt"
+echo "Git repository initialized and pre-commit hook set up to log commit messages to ./out/commits.txt"
