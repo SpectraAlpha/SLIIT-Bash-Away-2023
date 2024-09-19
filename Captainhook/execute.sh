@@ -1,4 +1,4 @@
 #!/bin/bash
 # List git commits in single line format and pipe to log file
 echo "Piping commits to log file"
-git log --pretty=format:'%h was %an, %ar, message: %s' > ./out/commits.log
+git log --pretty=format:'%s' > ./out/commits.log
