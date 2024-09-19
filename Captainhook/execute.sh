@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd src
 # Define the hook file path
 HOOK_FILE=".git/hooks/commit-msg"
 cat << 'EOF' > "$HOOK_FILE"
@@ -7,11 +7,11 @@ cat << 'EOF' > "$HOOK_FILE"
 
 # Check if ./out directory exists, if not, create it
 
-mkdir ./src/out
+mkdir ./out
 
 
 # Append the commit message to ./out/commits.txt
-cat "\$1" >> ./src/out/commits.txt
+cat "\$1" >> ./out/commits.txt
 
 # Optionally, add a timestamp for when the commit was made
 echo "Committed on \$(date)" >> ./out/commits.txt
