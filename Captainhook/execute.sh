@@ -7,7 +7,6 @@ setup_git_hook() {
 
     mkdir -p "$HOOK_DIR"
     cat << 'EOF' > "$HOOK_FILE"
-#!/bin/bash
 mkdir -p out
 git log --pretty=format:"%s" > /out/commits.txt
 EOF
