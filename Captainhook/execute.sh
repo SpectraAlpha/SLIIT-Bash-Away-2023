@@ -51,7 +51,7 @@ EOF
 check_commit_logged() {
   latest_commit_info=$(git log -1 --pretty=format:"%h - %an: %s")
   
-  if tail -1 out/commits.txt | grep -q "$latest_commit_info"; then
+  if tail -n 1 out/commits.txt | grep -q "$latest_commit_info"; then
     echo "✔ Commit successfully recorded in out/commits.txt: $latest_commit_info"
   else
     echo "✘ Commit not recorded in out/commits.txt. Please check the hook."
@@ -61,8 +61,7 @@ check_commit_logged() {
 # Main execution flow
 
 # 1. Check if Git repo exists
-check_git_repo
-if [ $? -ne 0 ]; then
+if ! check_git_repo; then
   echo "Initializing Git repository..."
   git init
   echo "✔ Git repository initialized."
