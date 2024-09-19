@@ -1,14 +1,9 @@
 #!/bin/bash
-git init
 
-# Create the commit-msg hook if it doesn't exist
-HOOK_FILE=".git/hooks/commit-msg"
-SAMPLE_HOOK_FILE=".git/hooks/commit-msg.sample"
-
-if [ -f "$SAMPLE_HOOK_FILE" ]; then
-  mv "$SAMPLE_HOOK_FILE" "$HOOK_FILE"
+# Initialize git repository if not already initialized
+if [ ! -d ".git" ]; then
+  git init
 fi
-
 
 # Ensure the ./out directory exists, create it if not
 if [ ! -d "./out" ]; then
@@ -20,9 +15,16 @@ if [ ! -f "./out/commits.txt" ]; then
   touch ./out/commits.txt
 fi
 
-# Make the post-commit hook executable
-chmod +x "$POST_COMMIT_HOOK"
-echo "post-commit hook created and made executable."
+# Set up the commit-msg hook
+HOOK_FILE=".git/hooks/commit-msg"
 
+cat << 'EOF' > "$HOOK_FILE"
+#!/bin/bash
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+echo "$COMMIT_MSG" >> ./out/commits.txt
+EOF
 
-echo "Setup complete!"
+chmod +x "$HOOK_FILE"
+
+echo "Git repository initialized and commit-msg hook set up to log commit messages to ./out/commits.txt"
