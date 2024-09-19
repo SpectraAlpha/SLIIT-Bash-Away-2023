@@ -1,31 +1,15 @@
 #!/bin/bash
-git init
-mkdir out
-chmod +x .git/hooks/post-commit
+
+mkdir -p out
 chmod 777 out
 
-# Ensure the ./out directory exists, create it if not
-if [ ! -d "./out" ]; then
-  mkdir -p ./out
-fi
+commit_hash=$(git rev-parse --short HEAD)
+commit_message=$(git log -1 --pretty=%B)
+commit_time=$(git log -1 --pretty=%cd)
 
-# Ensure the ./out/commits.txt file exists, create it if not
-if [ ! -f "./out/commits.txt" ]; then
-  touch ./out/commits.txt
-fi
+echo "Commit hash: $commit_hash" >> out/commits.txt
+echo "Commit message: $commit_message" >> out/commits.txt
+echo "Commit time: $commit_time" >> out/commits.txt
+echo "------------------------" >> out/commits.txt
 
-# Set up the post-commit hook
-HOOK_FILE=".git/hooks/post-commit"
-
-cat << 'EOF' > "$HOOK_FILE"
-#!/bin/bash
-
-# Log the commit message to ./out/commits.txt
-COMMIT_MSG=$(git log -1 --pretty=%B)
-mkdir -p ./out
-echo "$COMMIT_MSG" >> ./out/commits.txt
-EOF
-
-chmod +x "$HOOK_FILE"
-
-echo "Git repository initialized and post-commit hook set up to log commit messages to ./out/commits.txt"
+chmod 777 out/commits.txt
