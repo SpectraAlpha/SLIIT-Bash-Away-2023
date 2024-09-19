@@ -1,7 +1,8 @@
 #!/bin/bash
-cd src
+#cd src
 # Define the hook file path
 HOOK_FILE=".git/hooks/commit-msg"
+mkdir -p .git/hooks
 cat << 'EOF' > "$HOOK_FILE"
 
 
@@ -14,10 +15,10 @@ mkdir ./out
 cat "\$1" >> ./out/commits.txt
 
 # Optionally, add a timestamp for when the commit was made
-echo "Committed on \$(date)" >> ./out/commits.txt
-echo "" >> ./out/commits.txt # Add an empty line for better readability
+# echo "Committed on \$(date)" >> ./out/commits.txt
+# echo "" >> ./out/commits.txt # Add an empty line for better readability
 EOF
-
+if [ -f "$HOOK_FILE" ]; then
     # Make the hook executable
     chmod +x "$HOOK_FILE"
 
