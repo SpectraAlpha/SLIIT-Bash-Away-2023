@@ -20,7 +20,7 @@ check_git_repo() {
 
 # Function to log git commits to out/commits.txt
 log_git_commits() {
-  mkdir -p out
+  mkdir  out
   git log --pretty=format:"%h - %s" > out/commits.txt
   if [[ $? -ne 0 ]]; then
     echo "Error: Failed to log git commits"
