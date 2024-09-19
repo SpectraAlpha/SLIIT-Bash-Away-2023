@@ -1,13 +1,15 @@
 #!/bin/bash
+git init
 
-# Ensure the .git/hooks directory exists
-mkdir -p .git/hooks
-
-# Create the commit-msg hook
+# Create the commit-msg hook if it doesn't exist
 HOOK_FILE=".git/hooks/commit-msg"
+SAMPLE_HOOK_FILE=".git/hooks/commit-msg.sample"
 
-cat << 'EOF' > "$HOOK_FILE"
-#!/bin/bash
+if [ -f "$SAMPLE_HOOK_FILE" ]; then
+  mv "$SAMPLE_HOOK_FILE" "$HOOK_FILE"
+fi
+
+cat << 'EOF' >> "$HOOK_FILE"
 
 # Ensure the ./out directory exists, create it if not
 if [ ! -d "./out" ]; then
