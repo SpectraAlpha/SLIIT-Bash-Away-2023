@@ -1,20 +1,43 @@
 #!/bin/bash
 
-# Function to set up git hook
-setup_git_hook() {
-    HOOK_DIR="git/hooks"
-    HOOK_FILE="$HOOK_DIR/post-commit"
+# Define the hook file path
+HOOK_FILE=".git/hooks/commit-msg"
 
-    mkdir -p "$HOOK_DIR"
+# Create the commit-msg hook if it doesn't exist
+if [ -f "$HOOK_FILE" ]; then
+    echo "commit-msg hook already exists."
+else
+    echo "Creating commit-msg hook..."
+
+    # Write the content to the commit-msg hook
     cat << 'EOF' > "$HOOK_FILE"
-mkdir -p out
-git log --pretty=format:"%s" > /out/commits.txt
+#!/bin/bash
+
+# Check if ./out directory exists, if not, create it
+if [ ! -d "./out" ]; then
+  mkdir ./out
+fi
+
+# Append the commit message to ./out/commits.txt
+cat "\$1" >> ./out/commits.txt
+
+# Optionally, add a timestamp for when the commit was made
+echo "Committed on \$(date)" >> ./out/commits.txt
+echo "" >> ./out/commits.txt # Add an empty line for better readability
 EOF
 
+    # Make the hook executable
     chmod +x "$HOOK_FILE"
-}
 
-# Main script execution
-setup_git_hook
+    echo "commit-msg hook created and made executable."
+fi
 
-echo "Git hook has been set up to log commits to out/commits.txt."
+# Check if the out directory exists, create it if necessary
+if [ ! -d "./out" ]; then
+    echo "Creating ./out directory..."
+    mkdir ./out
+else
+    echo "./out directory already exists."
+fi
+
+echo "Setup complete!"
