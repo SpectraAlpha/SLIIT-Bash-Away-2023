@@ -1,34 +1,19 @@
 #!/bin/bash
 
-# Set up the out directory and commits.txt file
+# Ensure out directory and commits.txt file exist
 mkdir -p out
 touch out/commits.txt
 
-# Function to check if commit messages are being recorded
-check_commits_recorded() {
-  latest_commit_info=$(git log -1 --pretty=format:"%h - %an: %s")
-  if grep -q "$latest_commit_info" out/commits.txt; then
-    echo "✔ Commit recorded properly in commits.txt: $latest_commit_info"
-  else
-    echo "✘ Commit NOT recorded in commits.txt. Please check the hook setup."
-  fi
-}
-
-# Ensure we are in a Git repository
+# Check if we are in a Git repository, if not initialize one
 if [ ! -d ".git" ]; then
-  echo "This is not a Git repository. Initializing Git..."
+  echo "No Git repository found. Initializing one..."
   git init
-  if [ $? -eq 0 ]; then
-    echo "✔ Git repository initialized successfully."
-  else
-    echo "✘ Failed to initialize Git repository."
-    exit 1
-  fi
+  echo "✔ Git repository initialized."
 else
   echo "✔ Git repository already exists."
 fi
 
-# Create a post-commit hook in .git/hooks if it doesn't exist
+# Create post-commit hook if it doesn't exist
 HOOK_FILE=".git/hooks/post-commit"
 
 if [ ! -f "$HOOK_FILE" ]; then
@@ -42,17 +27,27 @@ commit_info=$(git log -1 --pretty=format:"%h - %an: %s")
 echo "$commit_info" >> out/commits.txt
 EOF
   chmod +x "$HOOK_FILE"
-  echo "✔ Post-commit hook set up successfully."
+  echo "✔ Post-commit hook created."
 else
   echo "✔ Post-commit hook already exists."
 fi
 
-# Making a test commit to ensure everything is working
-echo "Dummy test file for Git log" > testfile.txt
-git add testfile.txt
-git commit -m "Initial commit for testing"
+# Function to check if the latest commit was logged in commits.txt
+check_commit_logged() {
+  latest_commit_info=$(git log -1 --pretty=format:"%h - %an: %s")
+  
+  if tail -1 out/commits.txt | grep -q "$latest_commit_info"; then
+    echo "✔ Commit successfully recorded in out/commits.txt: $latest_commit_info"
+  else
+    echo "✘ Commit not recorded in out/commits.txt. Please check the hook."
+  fi
+}
 
-# Check if the commit was recorded
-check_commits_recorded
+# Make a test commit to check if everything works
+git add -A
+git commit -m "Test commit"
 
-echo "✔ Git commit log setup complete. Ready to sail with Captain Hook!"
+# Check if the commit was logged
+check_commit_logged
+
+echo "✔ Git setup and commit logging complete."
