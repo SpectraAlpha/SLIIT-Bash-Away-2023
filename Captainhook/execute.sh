@@ -1,6 +1,7 @@
 #!/bin/bash
 
 git init
+git add .
 # Ensure the ./out directory exists, create it if not
 if [ ! -d "./out" ]; then
   mkdir -p ./out
@@ -12,7 +13,7 @@ if [ ! -f "./out/commits.txt" ]; then
 fi
 
 # Set up the commit-msg hook
-HOOK_FILE=".git/hooks/commit-msg"
+HOOK_FILE=".git/hooks/post-commit"
 
 cat << 'EOF' > "$HOOK_FILE"
 #!/bin/bash
