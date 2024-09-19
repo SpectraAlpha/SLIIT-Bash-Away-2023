@@ -33,4 +33,10 @@ check_bash_files
 check_git_repo
 log_git_commits
 
-echo "Git commits have been logged to out/commits.txt"
+# Ensure output is only recorded in ./out/commits.txt
+if [[ -s ./out/commits.txt ]]; then
+  echo "Git commits have been logged to out/commits.txt"
+else
+  echo "Error: No commit messages recorded"
+  exit 1
+fi
